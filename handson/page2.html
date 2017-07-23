@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/github.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h2 id="機能構成">機能構成</h2>
+<p>画面 <code>LoginPage</code> と <code>MenuPage</code> を作ります。<br />
+アプリを起動すると、ログイン画面 <code>LoginPage</code> が開き、アカウントを入力しログインに成功すると <code>MenuPage</code> に遷移する、というイメージです。</p>
+<p><code>LoginPage</code> には、入力欄 <code>会社コード</code> <code>ユーザーID</code> <code>パスワード</code> <code>ログイン日付</code> と ログイン用のボタンを用意します。<br />
+ログインボタンを押すと入力値の検証がされ、ValidであればNXのログインサービスを呼び出します。</p>
+<h2 id="ファイルview-viewmodelの作成">ファイル(View, ViewModel)の作成</h2>
+<p>PCLプロジェクトの <code>Views</code> フォルダを右クリックし <code>追加</code> &gt; <code>新しい項目</code> を選択してください。</p>
+<p>新しい項目の追加画面にて、<code>Visual C#</code> &gt; <code>Prism</code> &gt; <code>Prism ContentPage (Xamarin.Forms)</code> を選択してください。<br />
+またファイル名は <code>LoginPage.xaml</code> とし、<code>追加</code> でファイルを作成してください。<br />
+（ファイル名はこの通りにしてください）<br />
+<img src="img/create_loginpage.png" /></p>
+<p><code>Views</code> フォルダの中に <code>LoginPage.xaml</code> が作成されると同時に、<code>ViewModels</code> フォルダの中に <code>LoginPageViewModel.cs</code> ファイルが生成されたことを確認してください。</p>
+<h2 id="デフォルト実行画面の指定">デフォルト実行画面の指定</h2>
+<p>特に設定をしないと、アプリの実行時にはプロジェクト作成時に自動生成された <code>MainPage</code> が表示されます。<br />
+今回は起動時に <code>LoginPage</code> を表示したいので設定を変更します。</p>
+<p><code>App.xaml.cs</code> を開いてください。（<code>App.xaml</code> を展開するとあります）</p>
+<p><code>OnInitialized</code> メソッドの <code>NavigationService.NavigateAsync</code> の処理を以下のように書き換えてください。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs">NavigationService.<span class="fu">NavigateAsync</span>(<span class="st">&quot;NavigationPage/LoginPage&quot;</span>);</code></pre></div>
+<p>これで起動時には <code>LoginPage</code> が表示されるようになります。</p>
+<p><code>MainPage</code> は使用しないので、ついでに <code>RegisterTypes</code> メソッド内の処理から <code>MainPage</code> の行を削除しておきましょう。</p>
+<p>これで、<code>App.xaml.cs</code>の中身は以下のようになっているはずです。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> Prism.<span class="fu">Unity</span>;
+<span class="kw">using</span> NXMobileHandsOn.<span class="fu">Views</span>;
+<span class="kw">using</span> Xamarin.<span class="fu">Forms</span>;
+
+<span class="kw">namespace</span> NXMobileHandsOn
+{
+    <span class="kw">public</span> <span class="kw">partial</span> <span class="kw">class</span> App : PrismApplication
+    {
+        <span class="kw">public</span> <span class="fu">App</span>(IPlatformInitializer initializer = <span class="kw">null</span>) : <span class="kw">base</span>(initializer) { }
+
+        <span class="kw">protected</span> <span class="kw">override</span> <span class="dt">void</span> <span class="fu">OnInitialized</span>()
+        {
+            <span class="fu">InitializeComponent</span>();
+
+            NavigationService.<span class="fu">NavigateAsync</span>(<span class="st">&quot;NavigationPage/LoginPage&quot;</span>);
+        }
+
+        <span class="kw">protected</span> <span class="kw">override</span> <span class="dt">void</span> <span class="fu">RegisterTypes</span>()
+        {
+            Container.<span class="fu">RegisterTypeForNavigation</span>&lt;NavigationPage&gt;();
+            Container.<span class="fu">RegisterTypeForNavigation</span>&lt;LoginPage&gt;();
+        }
+    }
+}</code></pre></div>
+<h2 id="loginpage画面の作成">LoginPage画面の作成</h2>
+<p>ログインページに部品を配置していきます。</p>
+<p><code>LoginPage.xaml</code> を開いてください。</p>
+<p>今回は <code>StackLayout</code> を使用して画面を組み立てます。</p>
+<p>XAMLの <code>&lt;ContentPage&gt;</code> の中に、<code>&lt;StackLayout&gt;</code> を記述してください。</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;StackLayout&gt;</span>
+
+<span class="kw">&lt;/StackLayout&gt;</span></code></pre></div>
+<p><code>会社コード</code> <code>ユーザーID</code> <code>パスワード</code> の入力コントロール <code>&lt;Entry&gt;</code> をそれぞれ配置してください。<br />
+また、パスワード欄には <code>IsPassword=&quot;True&quot;</code> プロパティを指定してください。これを指定することで、アプリ画面上で入力値が「***」のように表示されます。</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;StackLayout&gt;</span>
+    <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryKaiCode&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;会社コード&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryUserId&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;ユーザーID&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryPassword&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;パスワード&quot;</span><span class="ot"> IsPassword=</span><span class="st">&quot;True&quot;</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/StackLayout&gt;</span></code></pre></div>
+<p><code>ログイン日付</code> を選択するためのコントロール <code>DatePicker</code> を配置してください。<br />
+<code>DatePicker</code> では、アプリ画面でコントロールを選択すると、OSに組み込まれた日付選択機能が表示されます。</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;StackLayout&gt;</span>
+    <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryKaiCode&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;会社コード&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryUserId&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;ユーザーID&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryPassword&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;パスワード&quot;</span><span class="ot"> IsPassword=</span><span class="st">&quot;True&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;DatePicker</span><span class="ot"> x:Name=</span><span class="st">&quot;DpLoginDate&quot;</span><span class="ot"> Format=</span><span class="st">&quot;yyyy/MM/dd&quot;</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/StackLayout&gt;</span></code></pre></div>
+<p>最後にログインボタンを配置します。</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;StackLayout&gt;</span>
+    <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryKaiCode&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;会社コード&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryUserId&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;ユーザーID&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryPassword&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;パスワード&quot;</span><span class="ot"> IsPassword=</span><span class="st">&quot;True&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;DatePicker</span><span class="ot"> x:Name=</span><span class="st">&quot;DpLoginDate&quot;</span><span class="ot"> Format=</span><span class="st">&quot;yyyy/MM/dd&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;Button</span><span class="ot"> x:Name=</span><span class="st">&quot;BtnLogin&quot;</span><span class="ot"> Text=</span><span class="st">&quot;ログイン&quot;</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/StackLayout&gt;</span></code></pre></div>
+<p>デバッグを開始して、画面の表示を確認します。</p>
+<p>以下の通りの画面が表示されれば成功です。</p>
+<figure>
+<img src="img/login_page.png" />
+</figure>
+</body>
+</html>

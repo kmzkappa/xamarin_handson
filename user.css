@@ -1,0 +1,24 @@
+* {
+  font-family: "Meiryo";
+}
+
+code, code span {
+  font-family: "consolas,'IPAexÉSÉVÉbÉN',Meiryo";
+}
+body {
+  padding-top: 0px;
+}
+
+h1 {
+  margin-top: 0px;
+}
+
+li, li ul {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+hr {
+  border: 1px solid;
+  height: 0;
+}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/github.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="ログインサービスへのアクセス">ログインサービスへのアクセス</h1>
+<p>ログインボタンを押したらNXのログインサービスを呼ぶ処理を作成します。</p>
+<p>基本的なWebサービスへのアクセス手順はNXV2と同じです。<br />
+（WCFを標準でサポートしていない Profile の場合は異なります。）</p>
+<h2 id="サービス参照の追加">サービス参照の追加</h2>
+<p>ログインサービス <code>NLC00100SI</code> への参照をプロジェクトに追加します。</p>
+<p>今回は以下のURLを使用します。</p>
+<p><code>https://nxcloud-0-nxv2.superstream.co.jp/SuperStreamNX/SC/NLC00100SI.svc</code></p>
+<p>PCLプロジェクトを右クリック &gt; 追加 &gt; サービス参照 を選択してください。</p>
+<figure>
+<img src="img/addservice.png" />
+</figure>
+<p>アドレス欄にURLを入力し、 <code>移動</code> を押してください。<br />
+サービスの探索に成功したら、名前空間を <code>ServiceReference</code> に変更し <code>OK</code> を押して画面を閉じてください。</p>
+<figure>
+<img src="img/addservice2.png" />
+</figure>
+<h2 id="ログイン処理クラスの作成">ログイン処理クラスの作成</h2>
+<p><code>NLC00100SI</code>からログイン処理を呼び出すためのクラスを作成します。</p>
+<p>PCLプロジェクトに、新規クラス <code>LoginService.cs</code> を作成してください。</p>
+<figure>
+<img src="img/loginservicecs.png" />
+</figure>
+<p><code>LoginService</code>の中でサービスを呼び出すための設定処理を作成します。 <code>LoginService</code>クラスを以下のように作成してください。</p>
+<p>仕組みは既存のNXと同じ、かつXamarin自体の仕組みとは全く関係がないので、何も考えずコピペして構いません。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs"><span class="co">/* LoginService.cs */</span>
+    <span class="kw">public</span> <span class="kw">class</span> LoginService
+    {
+        <span class="kw">public</span> <span class="kw">static</span> <span class="kw">readonly</span> EndpointAddress EndPoint
+            = <span class="kw">new</span> <span class="fu">EndpointAddress</span>(<span class="st">&quot;https://nxcloud-0-nxv2.superstream.co.jp/SuperStreamNX/SC/NLC00100SI.svc&quot;</span>);
+
+        <span class="kw">private</span> INLC00100SI client;
+
+        <span class="kw">public</span> <span class="fu">LoginService</span>()
+        {
+            BasicHttpBinding binding = <span class="fu">CreateBasicHttp</span>();
+            client = <span class="kw">new</span> <span class="fu">NLC00100SIClient</span>(binding, EndPoint);
+        }
+
+        <span class="kw">private</span> <span class="kw">static</span> BasicHttpBinding <span class="fu">CreateBasicHttp</span>()
+        {
+            BasicHttpBinding binding = <span class="kw">new</span> BasicHttpBinding
+            {
+                Name = <span class="st">&quot;basicHttpBinding&quot;</span>,
+                MaxBufferSize = <span class="dv">2147483647</span>,
+                MaxReceivedMessageSize = <span class="dv">2147483647</span>
+            };
+            TimeSpan timeout = <span class="kw">new</span> <span class="fu">TimeSpan</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">30</span>);
+            binding.<span class="fu">SendTimeout</span> = timeout;
+            binding.<span class="fu">OpenTimeout</span> = timeout;
+            binding.<span class="fu">ReceiveTimeout</span> = timeout;
+            <span class="kw">return</span> binding;
+        }
+    }</code></pre></div>
+<p>ここで、普段のNXなら <code>client</code>を<code>NLC00100SIClient</code>型で作成し、<code>client.LoginV2Completed += CallbackMethod</code>などとしてコールバック処理を登録し、<code>client.LoginV2Async()</code>を呼び出すところですが…<br />
+<code>LoginV2Completed</code>のようなイベントを使ったコールバックでは、ViewModel からログイン処理を呼び出した後の処理が大変なので、<code>Task&lt;T&gt;</code>を使ったパターンに変換しておきます。<br />
+（ViewModel側で例外処理を行うこともできないし…）</p>
+<p><code>LoginService.cs</code> 呼び出し処理 <code>LoginAsync</code> を作成します。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs"><span class="co">/* LoginService.cs */</span>
+        <span class="kw">public</span> async Task&lt;NLC00100SIParamV2&gt; <span class="fu">LoginAsync</span>(<span class="dt">string</span> kaiCode, <span class="dt">string</span> userId, <span class="dt">string</span> password, DateTime loginDate)
+        {
+            <span class="dt">var</span> param = <span class="kw">new</span> <span class="fu">NLC00100SIParamV2</span>();
+            param.<span class="fu">KaiCode</span> = kaiCode;
+            param.<span class="fu">UsrID</span> = userId;
+            param.<span class="fu">Pswd</span> = password;
+            param.<span class="fu">LoginDate</span> = loginDate;
+
+            <span class="dt">var</span> task = <span class="kw">new</span> <span class="fu">TaskFactory</span>().<span class="fu">FromAsync</span>(client.<span class="fu">BeginLogInV2</span>, client.<span class="fu">EndLogInV2</span>, param, <span class="kw">null</span>);
+            <span class="kw">return</span> await task;
+        }</code></pre></div>
+<p>このメソッドでは、引数から <code>会社コード</code> <code>ユーザーID</code> <code>パスワード</code> <code>ログイン日付</code> を取得しパラメータオブジェクトを作成します。 現在のNXのWebサービスのクライアント処理は、内部に <code>BeginXxx</code> <code>EndXxx</code> というメソッドを持っており、この場合は <code>Task</code>を使ったパターンに変換が可能です。</p>
+<p>ViewModelで<code>LoginAsync</code>メソッドを呼び出すと、<code>NLC00100SIParamV2</code>型の実行結果が返るという想定です。</p>
+<p>実際にViewModelからログイン処理を呼び出してみます。</p>
+<p><code>LoginPageViewModel.cs</code> の <code>LoginButtonTapped</code>メソッドを、以下のように書き換えてください。<br />
+ここではログイン処理中に画面が固まらないように非同期で処理を呼んでいます。<br />
+メソッドの定義に <code>async</code> を追加していることに注意してください。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs"><span class="co">/* LoginPageViewModel.cs */</span>
+        <span class="co">// ログインボタンの押下時処理</span>
+        <span class="kw">private</span> async <span class="dt">void</span> <span class="fu">LoginButtonTapped</span>(<span class="dt">object</span> sender)
+        {
+            <span class="dt">var</span> loginService = <span class="kw">new</span> <span class="fu">LoginService</span>();
+            NLC00100SIParamV2 result = <span class="kw">null</span>;
+            <span class="kw">try</span>
+            {
+                <span class="co">// ログインサービスの呼び出し</span>
+                result = await loginService.<span class="fu">LoginAsync</span>(KaiCode.<span class="fu">Value</span>, UserId.<span class="fu">Value</span>, Password.<span class="fu">Value</span>, LoginDate.<span class="fu">Value</span>);
+            }
+            <span class="kw">catch</span> (Exception ex)
+            {
+
+            }
+
+            <span class="co">// ログインに成功すると認証キー&#39;NshKey&#39;が設定される</span>
+            <span class="kw">if</span> (result?.<span class="fu">NshKey</span> != <span class="kw">null</span>)
+            {
+                await _navigationService.<span class="fu">NavigateAsync</span>(<span class="st">&quot;MenuPage&quot;</span>);
+            }
+        }</code></pre></div>
+<p><code>NLC00100SI</code>では、ログインに成功した場合のみ実行結果のパラメータに 認証キー<code>NshKey</code> が設定されます。<br />
+認証キーが設定されているかどうかでログインの成否を判定し、成功していれば <code>MenuPage</code> に遷移するようにしています。</p>
+<p>これでNXのサーバへのアクセス自体はできましたが（必ずログインに失敗しますが）、ログインに失敗した場合は何も処理をしていないので、ユーザーには失敗したことがわかりません。<br />
+失敗した場合には、画面にエラーメッセージを表示するようにしておきます。</p>
+<p><code>LoginPageViewModel.cs</code> にエラーメッセージ用のプロパティを追加してください。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs"><span class="co">/* LoginPageViewModel.cs */</span>
+        <span class="co">// エラーメッセージ</span>
+        <span class="kw">public</span> ReactiveProperty&lt;<span class="dt">string</span>&gt; ErrorMessage { <span class="kw">get</span>; <span class="kw">set</span>; }
+            = <span class="kw">new</span> ReactiveProperty&lt;<span class="dt">string</span>&gt;();</code></pre></div>
+<p>作成した <code>ErrorMessage</code> プロパティに、ログインの失敗時にメッセージを設定するよう処理を追加します。 <code>LoginButtonTapped</code>メソッドを以下のように書き換えてください。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs"><span class="co">/* LoginPageViewModel.cs */</span>
+        <span class="co">// ログインボタンの押下時処理</span>
+        <span class="kw">private</span> async <span class="dt">void</span> <span class="fu">LoginButtonTapped</span>(<span class="dt">object</span> sender)
+        {
+            <span class="dt">var</span> loginService = <span class="kw">new</span> <span class="fu">LoginService</span>();
+            NLC00100SIParamV2 result = <span class="kw">null</span>;
+            <span class="kw">try</span>
+            {
+                <span class="co">// ログインサービスの呼び出し</span>
+                result = await loginService.<span class="fu">LoginAsync</span>(KaiCode.<span class="fu">Value</span>, UserId.<span class="fu">Value</span>, Password.<span class="fu">Value</span>, LoginDate.<span class="fu">Value</span>);
+            }
+            <span class="kw">catch</span> (Exception ex)
+            {
+                ErrorMessage.<span class="fu">Value</span> = ex.<span class="fu">Message</span>;
+            }
+
+            <span class="co">// ログインに成功すると認証キー&#39;NshKey&#39;が設定される</span>
+            <span class="kw">if</span> (result?.<span class="fu">NshKey</span> != <span class="kw">null</span>)
+            {
+                ErrorMessage.<span class="fu">Value</span> = <span class="dt">string</span>.<span class="fu">Empty</span>;
+                await _navigationService.<span class="fu">NavigateAsync</span>(<span class="st">&quot;MenuPage&quot;</span>);
+            }
+            <span class="kw">else</span>
+            {
+                ErrorMessage.<span class="fu">Value</span> = result.<span class="fu">clientMessageList</span>.<span class="fu">FirstOrDefault</span>().<span class="fu">StatusMessage</span>;
+            }
+        }</code></pre></div>
+<p>ここでは、例外が発生した場合には例外オブジェクトからエラーメッセージを取得、サーバへのアクセスに成功したもののログインに失敗した場合は処理結果オブジェクトからエラーメッセージを取得し、<code>ErrorMessage</code>プロパティに値を設定しています。</p>
+<p>次に <code>LoginPage.xaml</code> にて、エラーメッセージを表示するためのラベルを配置します。</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="co">&lt;!-- LoginPage.xaml --&gt;</span>
+    <span class="kw">&lt;StackLayout&gt;</span>
+        <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryKaiCode&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;会社コード&quot;</span><span class="ot"> Text=</span><span class="st">&quot;{Binding KaiCode.Value}&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryUserId&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;ユーザーID&quot;</span><span class="ot"> Text=</span><span class="st">&quot;{Binding UserId.Value}&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryPassword&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;パスワード&quot;</span><span class="ot"> IsPassword=</span><span class="st">&quot;True&quot;</span><span class="ot"> Text=</span><span class="st">&quot;{Binding Password.Value}&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;DatePicker</span><span class="ot"> x:Name=</span><span class="st">&quot;DpLoginDate&quot;</span><span class="ot"> Format=</span><span class="st">&quot;yyyy/MM/dd&quot;</span><span class="ot"> Date=</span><span class="st">&quot;{Binding LoginDate.Value}&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;Button</span><span class="ot"> x:Name=</span><span class="st">&quot;BtnLogin&quot;</span><span class="ot"> Text=</span><span class="st">&quot;ログイン&quot;</span><span class="ot"> Command=</span><span class="st">&quot;{Binding LoginCommand}&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;Label</span><span class="ot"> x:Name=</span><span class="st">&quot;LblErroMessage&quot;</span><span class="ot"> Text=</span><span class="st">&quot;{Binding ErrorMessage.Value}&quot;</span><span class="ot"> TextColor=</span><span class="st">&quot;Red&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;/StackLayout&gt;</span></code></pre></div>
+<p>エミュレータ上で動作を確認してみます。<br />
+ログインボタンを押して「ログイン情報に誤りがあります。ログインできません。」と表示されたら成功です。<br />
+（NXのサーバから返されたエラーメッセージなので、通信に成功していることになります。）</p>
+<figure>
+<img src="img/loginerror.gif" />
+</figure>
+</body>
+</html>

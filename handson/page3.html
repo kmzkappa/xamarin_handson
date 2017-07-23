@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/github.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h2 id="view-viewmodelのプロパティのバインディング">View-ViewModelのプロパティのバインディング</h2>
+<p>View(LoginPage.xaml)とViewModel(LoginPageViewModel.cs)でプロパティの値を共有できるようにします。</p>
+<h3 id="会社コード欄のバインディング">会社コード欄のバインディング</h3>
+<p><code>LoginPageViewModel.cs</code> を開いてください。</p>
+<p>まずは 会社コード のプロパティを作成します。<br />
+<code>LoginPageViewModel</code> クラス内に、<code>ReactiveProperty&lt;string&gt;</code>型のプロパティを作成してください。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs">    <span class="kw">public</span> <span class="kw">class</span> LoginPageViewModel : BindableBase
+    {
+        <span class="kw">public</span> ReactiveProperty&lt;<span class="dt">string</span>&gt; KaiCode { <span class="kw">get</span>; <span class="kw">set</span>; }
+            = <span class="kw">new</span> ReactiveProperty&lt;<span class="dt">string</span>&gt;();
+        ...</code></pre></div>
+<p>プロパティを作成したので、View(LoginPage.xaml) の会社コード入力欄とバインディングをします。<br />
+<code>LoginPage.xaml</code>を開いて、会社コード欄を下記のように変更してください。<br />
+（<code>KaiCode</code>の後に<code>.Value</code>を付けるのを忘れないでください。慣れないとよく忘れます…）</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryKaiCode&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;会社コード&quot;</span><span class="ot"> Text=</span><span class="st">&quot;{Binding KaiCode.Value}&quot;</span> <span class="kw">/&gt;</span></code></pre></div>
+<p>これでViewとViewModelの<code>KaiCode</code>がバインディングされました。<br />
+（<code>ReactiveProperty&lt;T&gt;</code>は<code>INotifyPropertyChanged</code>を実装しており、明示的な<code>OnPropertyChanged</code>などの呼び出しは不要です。）</p>
+<p>試しに ViewModel(LoginPageViewModel.cs) のコンストラクタにて、会社コードの初期値を設定してみます。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs">    <span class="kw">public</span> <span class="kw">class</span> LoginPageViewModel : BindableBase
+    {
+        <span class="kw">public</span> ReactiveProperty&lt;<span class="dt">string</span>&gt; KaiCode { <span class="kw">get</span>; <span class="kw">set</span>; }
+            = <span class="kw">new</span> ReactiveProperty&lt;<span class="dt">string</span>&gt;();
+
+        <span class="kw">public</span> <span class="fu">LoginPageViewModel</span>()
+        {
+            KaiCode.<span class="fu">Value</span> = <span class="st">&quot;NXSYS&quot;</span>;
+        }
+    }</code></pre></div>
+<p>デバッグを開始して動作を確認してください。<br />
+会社コード欄に「NXSYS」が表示されていればバインディング成功です。</p>
+<figure>
+<img src="img/default_kaicode.png" />
+</figure>
+<h3 id="ユーザーidパスワードログイン日付のバインディング">ユーザーID・パスワード・ログイン日付のバインディング</h3>
+<p>会社コードと同じように、ユーザーID・パスワード・ログイン日付の入力欄もバインディングしておきます。</p>
+<p><code>LoginPageViewModel.cs</code>に、<code>UserId</code>, <code>Password</code>, <code>LoginDate</code> のプロパティを追加してください。<br />
+（<code>LoginDate</code>は日付なので、<code>ReactiveProperty&lt;DateTime&gt;</code>型にしてください）</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs">    <span class="kw">public</span> <span class="kw">class</span> LoginPageViewModel : BindableBase
+    {
+        <span class="co">// 会社コード</span>
+        <span class="kw">public</span> ReactiveProperty&lt;<span class="dt">string</span>&gt; KaiCode { <span class="kw">get</span>; <span class="kw">set</span>; }
+            = <span class="kw">new</span> ReactiveProperty&lt;<span class="dt">string</span>&gt;();
+
+        <span class="co">// ユーザーID</span>
+        <span class="kw">public</span> ReactiveProperty&lt;<span class="dt">string</span>&gt; UserId { <span class="kw">get</span>; <span class="kw">set</span>; }
+            = <span class="kw">new</span> ReactiveProperty&lt;<span class="dt">string</span>&gt;();
+
+        <span class="co">// パスワード</span>
+        <span class="kw">public</span> ReactiveProperty&lt;<span class="dt">string</span>&gt; Password { <span class="kw">get</span>; <span class="kw">set</span>; }
+            = <span class="kw">new</span> ReactiveProperty&lt;<span class="dt">string</span>&gt;();
+
+        <span class="co">// ログイン日付</span>
+        <span class="kw">public</span> ReactiveProperty&lt;DateTime&gt; LoginDate { <span class="kw">get</span>; <span class="kw">set</span>; }
+            = <span class="kw">new</span> ReactiveProperty&lt;DateTime&gt;();
+
+        <span class="kw">public</span> <span class="fu">LoginPageViewModel</span>()
+        {
+            KaiCode.<span class="fu">Value</span> = <span class="st">&quot;NXSYS&quot;</span>;
+        }
+    }</code></pre></div>
+<p><code>LoginPage.xaml</code>の各入力欄に、プロパティのバインディングの指定を追加してください。</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml">    <span class="kw">&lt;StackLayout&gt;</span>
+        <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryKaiCode&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;会社コード&quot;</span><span class="ot"> Text=</span><span class="st">&quot;{Binding KaiCode.Value}&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryUserId&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;ユーザーID&quot;</span><span class="ot"> Text=</span><span class="st">&quot;{Binding UserId.Value}&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;Entry</span><span class="ot"> x:Name=</span><span class="st">&quot;EntryPassword&quot;</span><span class="ot"> Placeholder=</span><span class="st">&quot;パスワード&quot;</span><span class="ot"> IsPassword=</span><span class="st">&quot;True&quot;</span><span class="ot"> Text=</span><span class="st">&quot;{Binding Password.Value}&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;DatePicker</span><span class="ot"> x:Name=</span><span class="st">&quot;DpLoginDate&quot;</span><span class="ot"> Format=</span><span class="st">&quot;yyyy/MM/dd&quot;</span><span class="ot"> Date=</span><span class="st">&quot;{Binding LoginDate.Value}&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;Button</span><span class="ot"> x:Name=</span><span class="st">&quot;BtnLogin&quot;</span><span class="ot"> Text=</span><span class="st">&quot;ログイン&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;/StackLayout&gt;</span></code></pre></div>
+</body>
+</html>

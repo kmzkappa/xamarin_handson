@@ -1,0 +1,14 @@
+// 既定の設定を上書きするには、このファイル内に設定を挿入します
+{
+        //-------- Markdown preview configuration --------
+    // A list of URLs or local paths to CSS style sheets to use from the markdown preview.
+    "markdown.styles": [
+        "C:\\Users\\Murahashi\\.vscode\\mdpreview.css"
+    ],
+    "markdown.preview.fontFamily": "'Consolas', 'Meiryo', 'SFUIText-Light', 'HelveticaNeue-Light', sans-serif",
+// 自動セーブ
+"markdown-pdf.convertOnSave": false,
+// 出力フォーマット: pdf, html, png, jpeg
+"markdown-pdf.type": "html",
+"pandoc.htmlOptString": "-s -t html5 -c css/github.css"
+}

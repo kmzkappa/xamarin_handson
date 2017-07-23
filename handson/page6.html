@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="css/github.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h2 id="暗号化処理の作成">暗号化処理の作成</h2>
+<p>ログインサービスへのアクセスは完成しましたが、実際のログインに失敗しました。<br />
+これは、入力したパスワードを暗号化せずにサーバに送信しているからです。</p>
+<p>NXのクライアントでは <code>NXCryptoProvider</code> で暗号化をしています。<br />
+<code>NXCryptoProvider</code>では内部で <code>System.Security.Cryptography</code> を使用しています。 しかし、APIの制限によりPCLからは <code>System.Security.Cryptography</code> を呼ぶことはできません。</p>
+<p>ここでは、Androidプロジェクト側に <code>NXCryptoProvider</code> を実装し、ViewModelから呼び出すようにします。</p>
+</body>
+</html>

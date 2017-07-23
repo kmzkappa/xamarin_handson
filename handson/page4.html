@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/github.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="ログインボタン処理の作成">ログインボタン処理の作成</h1>
+<p>ログインボタンを押すとバリデーション・ログインサービスの呼び出しが行われ、成功すると次の画面に遷移する想定です。</p>
+<p>まずは難しい処理は行わず、画面の遷移だけを行う処理を作成します。</p>
+<h2 id="メニュー画面の作成">メニュー画面の作成</h2>
+<p>遷移先の画面 <code>MenuPage</code> を作成します。<br />
+（ログインをしたらメニュー画面を表示したい、という意味で「MenuPage」という名前にしていますが、（時間の都合で）実際には何もない画面を作成します）</p>
+<p><code>LoginPage.xaml</code>を作った時と同じように、<code>NXMobileHandsOn</code>プロジェクトの<code>Views</code>フォルダの中に、Prismのテンプレートから <code>MenuPage.xaml</code> を作成してください。</p>
+<figure>
+<img src="img/create_menupage.png" />
+</figure>
+<p><code>MenuPage.xaml</code>に、メニューページだとわかるように、タイトルを設定しておきます。</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;?xml</span> version=&quot;1.0&quot; encoding=&quot;utf-8&quot; <span class="kw">?&gt;</span>
+<span class="kw">&lt;ContentPage</span><span class="ot"> xmlns=</span><span class="st">&quot;http://xamarin.com/schemas/2014/forms&quot;</span>
+<span class="ot">             xmlns:x=</span><span class="st">&quot;http://schemas.microsoft.com/winfx/2009/xaml&quot;</span>
+<span class="ot">             xmlns:prism=</span><span class="st">&quot;clr-namespace:Prism.Mvvm;assembly=Prism.Forms&quot;</span>
+<span class="ot">             prism:ViewModelLocator.AutowireViewModel=</span><span class="st">&quot;True&quot;</span>
+<span class="ot">             x:Class=</span><span class="st">&quot;NXMobileHandsOn.Views.MenuPage&quot;</span>
+<span class="ot">             Title=</span><span class="st">&quot;メニューページ&quot;</span><span class="kw">&gt;</span>
+  
+<span class="kw">&lt;/ContentPage&gt;</span></code></pre></div>
+<h2 id="ボタン処理の作成仮">ボタン処理の作成（仮）</h2>
+<p>画面遷移の処理を作る前に、ログインボタンを押したら何らかの処理が実行される処理を作成しておきます。</p>
+<p>以下のように、ログイン画面(LoginPageViewModel.cs)にボタン処理のコマンド（プロパティ）を作成してください。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs">        <span class="co">// ログインボタンの処理</span>
+        <span class="kw">public</span> ReactiveCommand LoginCommand { <span class="kw">get</span>; <span class="kw">set</span>; }
+            = <span class="kw">new</span> <span class="fu">ReactiveCommand</span>();</code></pre></div>
+<p>次に、ログインボタンが押されたときに実行されるメソッドを作成します。<br />
+メソッド名は好きな名前で構いませんが、<code>object</code>型の引数を１つ取るようにする必要があります。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs">        <span class="co">// ログインボタンの押下時処理</span>
+        <span class="kw">private</span> <span class="dt">void</span> <span class="fu">LoginButtonTapped</span>(<span class="dt">object</span> sender)
+        {
+
+        }</code></pre></div>
+<p>作成した <code>LoginCommand</code>と<code>LoginButtonTapped</code>メソッドを紐付けます。<br />
+コンストラクタにて <code>LoginCommand.Subscribe</code>メソッドを発行し、引数に <code>LoginButtonTapped</code> を指定してください。 （<code>ReactiveCommand</code>の<code>Subscribe</code>メソッドで、コマンドと実行処理を結びつけます）</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs">        <span class="kw">public</span> <span class="fu">LoginPageViewModel</span>()
+        {
+            KaiCode.<span class="fu">Value</span> = <span class="st">&quot;NXSYS&quot;</span>;
+            LoginCommand.<span class="fu">Subscribe</span>(LoginButtonTapped);
+        }</code></pre></div>
+<p>最後に、View(LoginPage.xaml)にて、ログインボタンの <code>Command</code> プロパティに ViewModel で作成したReactiveCommandプロパティ<code>LoginCommand</code>を指定します。</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;Button</span><span class="ot"> x:Name=</span><span class="st">&quot;BtnLogin&quot;</span><span class="ot"> Text=</span><span class="st">&quot;ログイン&quot;</span><span class="ot"> Command=</span><span class="st">&quot;{Binding LoginCommand}&quot;</span> <span class="kw">/&gt;</span></code></pre></div>
+<p>動作を確認します。<br />
+ボタンが押されると実際に ViewModel の <code>LoginButtonTapped</code> が呼び出されることを確認するために、<code>LoginButtonTapped</code>の中にブレークポイントを設置してください。<br />
+そしてデバッグを開始し、ボタンを押してみてください。<code>LoginButtonTapped</code>の中のブレークポイントで処理が停止すれば成功です。</p>
+<h2 id="遷移処理の作成">遷移処理の作成</h2>
+<p>ログインボタンを押すと ViewModel の <code>LoginButtonTapped</code>メソッドが呼び出されるようになりました。<br />
+次は、実際に画面を遷移させる処理を作成します。</p>
+<p><code>LoginPageViewModel.cs</code> に <code>_navigationService</code>変数を追加し、コンストラクタを次のように変更してください。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs">        <span class="co">// NavigationService</span>
+        <span class="kw">private</span> INavigationService _navigationService;
+
+        <span class="co">// navigationSeriviceはDIコンテナによって自動的にInjectされる。</span>
+        <span class="co">// 命名規約によって動作するため、引数は「navigationService」という名前である必要ががある</span>
+        <span class="kw">public</span> <span class="fu">LoginPageViewModel</span>(INavigationService navigationService)
+        {
+            KaiCode.<span class="fu">Value</span> = <span class="st">&quot;NXSYS&quot;</span>;
+            LoginCommand.<span class="fu">Subscribe</span>(LoginButtonTapped);
+            _navigationService = navigationService;
+        }</code></pre></div>
+<p>コンストラクタに <code>INavigationService navigationService</code> が追加されました。これを使用してページの遷移を行います。 <code>LoginPageViewModel</code>を使用する際、開発者は引数を指定して<code>LoginPageViewModel</code>のコンストラクタを呼ぶ必要はありません。<br />
+画面を表示しようとしたとき、PrismのDIコンテナが自動的に <code>navigationService</code>引数に値をセットした状態でコンストラクタを呼び出します。</p>
+<p>現在、<code>App.xaml.cs</code>の<code>RegisterTypes</code>メソッドに以下の処理が書かれています。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs">Container.<span class="fu">RegisterTypeForNavigation</span>&lt;LoginPage&gt;();</code></pre></div>
+<p>この処理が書かれていると、指定したページを表示する際にコンストラクタの <code>navigationService</code> 引数に値をセットして呼び出す、という仕組みです。</p>
+<p>遷移処理を作成します。</p>
+<p>画面の遷移を行うには、<code>navigationService</code>の<code>NavigateAsync</code>メソッドを呼ぶだけです。<br />
+<code>LoginPageViewModel.cs</code>にて、ログインボタンを押したときの動作<code>LoginButtonTapped</code>メソッドの中に以下のように遷移処理を書いてください。</p>
+<div class="sourceCode"><pre class="sourceCode cs"><code class="sourceCode cs">        <span class="co">// ログインボタンの押下時処理</span>
+        <span class="kw">private</span> <span class="dt">void</span> <span class="fu">LoginButtonTapped</span>(<span class="dt">object</span> sender)
+        {
+            _navigationService.<span class="fu">NavigateAsync</span>(<span class="st">&quot;MenuPage&quot;</span>);
+        }</code></pre></div>
+<p><code>LoginPage</code>から<code>MenuPage</code>に遷移するため、遷移先の名前<code>MenuPage</code>を引数に指定しています。</p>
+<p>デバッグを開始して、動作を確認してください。</p>
+<p>ログインボタンを押して画面が移動すれば成功です。</p>
+<figure>
+<img src="img/navigate.gif" />
+</figure>
+</body>
+</html>

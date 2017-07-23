@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="css/github.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h2 id="prism-template-pack-のインストール">Prism Template Pack のインストール</h2>
+<p>Prism プロジェクトを１から作ると手間がかかるので、テンプレートを用いてプロジェクトを作成します。<br />
+Visual Studio Marketplace から Prism Template Pack をダウンロード・インストールしてください。</p>
+<p><a href="https://marketplace.visualstudio.com/items?itemName=BrianLagunas.PrismTemplatePack">Prism Template Pack - Visual Studio Marketplace</a></p>
+<h2 id="プロジェクトの作成">プロジェクトの作成</h2>
+<p>Visual Studio から新規プロジェクトを作成します。</p>
+<figure>
+<img src="img/newproject.png" />
+</figure>
+<p>今回は Android を対象にします。</p>
+<figure>
+<img src="img/select_platform.png" />
+</figure>
+<h2 id="エミュレータの起動確認">エミュレータの起動確認</h2>
+<p>開発の前に、エミュレータが正しく動くことを確認します。</p>
+<p>Androidプロジェクト <code>NXMobileHandsOn.Droid</code> をスタートアップ プロジェクトに指定してください。 次にデバッガの選択項目から <code>VisualStudio_android-23_x86_phone (Android 6.0 - API 23)</code> を選択し、エミュレータでのデバッグを確認してください。</p>
+<figure>
+<img src="img/emulatorselect.png" />
+</figure>
+<p>Androidエミュレータ上で &quot;Hello from Xamarin.Forms and Prism&quot; と表示されたら成功です。</p>
+<figure>
+<img src="img/first_debug.png" />
+</figure>
+<p>最初の動作確認は以上ですが、エミュレータは今後も使用するので終了しないでください。<br />
+（起動に時間がかかるので…）</p>
+<h2 id="プロジェクトの初期設定">プロジェクトの初期設定</h2>
+<p>PCLプロジェクトの Profile を変更します。<br />
+（この作業により設定を変更しないと、WCFアクセスを行うことができません。）</p>
+<p>PCLプロジェクト（「移植可能」と書いてあるプロジェクト）を右クリックし、プロパティを開きます。</p>
+<figure>
+<img src="img/project_property.png" />
+</figure>
+<p><code>ライブラリ</code> &gt; <code>ターゲット</code> &gt; <code>変更ボタン</code> をクリックしてください。</p>
+<p>ターゲットの変更ウィンドウにて、次の手順で操作をしてください。<br />
+（手順を間違えると想定通りの設定にならないことがあります）</p>
+<ol type="1">
+<li><code>.NET Framework 4.5</code> を <code>.NET Framework 4.5.1</code> に変更する</li>
+<li><code>ASP.NET Core 1.0</code> のチェックを外す</li>
+<li><code>OK</code> ボタンを押して閉じる</li>
+</ol>
+<figure>
+<img src="img/select_target.png" />
+</figure>
+<p>PCLプロジェクトの <code>参照</code> を展開し、<code>.NET</code> のプロパティを確認してください。 <code>パス</code> の末尾が <code>Profile44</code> となっていれば成功です。</p>
+<figure>
+<img src="img/profile44.png" />
+</figure>
+<p>※ Xamarin では、ターゲット プラットフォーム の組み合わせにより使用できる .NET の機能が制限されます。<br />
+　 <code>Profile 44</code> は WFCの機能が入った組み合わせの１つです。</p>
+<h2 id="reactiveproperty-のインストール">ReactiveProperty のインストール</h2>
+<p><a href="https://github.com/runceel/ReactiveProperty">ReactiveProperty</a> を使うと View - ViewModel 間のデータバインディングやコマンドの作成が簡単にできます。</p>
+<p>ソリューション エクスプローラー から、<code>ソリューション 'NXMobileHandsOn' (2 プロジェクト)</code> を右クリックし、<code>ソリューションの NuGet パッケージの管理</code> をクリックしてください。</p>
+<p><code>NuGet - ソリューション</code> 画面の <code>参照</code> タブ(?) にて、<code>ReactiveProperty</code> を検索してください。</p>
+<p>見つかったら、<code>NXMobileHandOn</code> プロジェクトにチェックを入れ、バージョン: <code>2.9.0</code> を選択し インストールを実行してください。<br />
+（.NET Framework 4.5.1 の場合、3.0.0 以上のバージョンをインストールすることはできません）</p>
+<figure>
+<img src="img/install_reactiveproperty.png" />
+</figure>
+</body>
+</html>
